@@ -31,8 +31,9 @@ namespace MyLogger
                 }
                 catch (Exception ex)
                 {
-                    _treeLogger.Log($"Exception: {ex.Message}");
-                    throw;
+                    // Log full exception
+                    _treeLogger.Log($"EXCEPTION: {ex.GetType().Name} - {ex.Message}\n{ex.StackTrace}");
+                    throw; // rethrow to keep original behavior
                 }
                 finally
                 {
@@ -44,5 +45,7 @@ namespace MyLogger
                 invocation.Proceed();
             }
         }
+
+
     }
 }

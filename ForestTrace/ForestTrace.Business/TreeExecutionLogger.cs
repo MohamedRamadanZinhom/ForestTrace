@@ -97,5 +97,36 @@ namespace MyLogger
                 BuildMermaid(child, lines, nodeId);
             }
         }
+
+        public void LogInfo(string message)
+        {
+            var context = _currentContext.Value;
+            if (context != null)
+            {
+                context.Logs.Add($"INFO: {message}");
+            }
+            _logger.Info(message);
+        }
+
+        public void LogError(string message)
+        {
+            var context = _currentContext.Value;
+            if (context != null)
+            {
+                context.Logs.Add($"ERROR: {message}");
+            }
+            _logger.Error(message);
+        }
+
+        public void LogDebug(string message)
+        {
+            var context = _currentContext.Value;
+            if (context != null)
+            {
+                context.Logs.Add($"DEBUG: {message}");
+            }
+            _logger.Debug(message);
+        }
+
     }
 }
