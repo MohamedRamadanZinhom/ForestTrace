@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text.Json.Serialization;
 
 namespace ForestTrace.Business
 {
@@ -13,6 +14,7 @@ namespace ForestTrace.Business
         public List<ExecutionContext> Children { get; set; } = new();
         public List<string> Logs { get; set; } = new();
         public Dictionary<string, object>? Properties { get; set; }
+        [JsonIgnore]
         public ExecutionContext? Parent { get; set; }
 
         public ExecutionContext(string name, string traceId)
