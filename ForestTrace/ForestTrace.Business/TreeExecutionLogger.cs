@@ -43,7 +43,7 @@ namespace ForestTrace.Business
             _currentContext.Value = context;
         }
 
-        public void Log(string message)
+        public void Log(string message , Dictionary<string, object>? props = null)
         {
             var context = _currentContext.Value;
             if (context != null)
@@ -135,7 +135,7 @@ namespace ForestTrace.Business
             return text.Replace("\"", "\\\"");
         }
 
-        public void LogInfo(string message)
+        public void LogInfo(string message, Dictionary<string, object>? props = null)
         {
             var context = _currentContext.Value;
             if (context != null)
@@ -145,7 +145,7 @@ namespace ForestTrace.Business
             _logger.Info(message);
         }
 
-        public void LogError(string message)
+        public void LogError(string message, Dictionary<string, object>? props = null)
         {
             var context = _currentContext.Value;
             if (context != null)
@@ -155,7 +155,7 @@ namespace ForestTrace.Business
             _logger.Error(message);
         }
 
-        public void LogDebug(string message)
+        public void LogDebug(string message, Dictionary<string, object>? props = null)
         {
             var context = _currentContext.Value;
             if (context != null)
