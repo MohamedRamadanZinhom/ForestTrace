@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace MyLogger
+namespace ForestTrace.Business
 {
     public class ExecutionContext
     {

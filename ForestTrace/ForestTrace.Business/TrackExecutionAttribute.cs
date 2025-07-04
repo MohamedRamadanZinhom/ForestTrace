@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace MyLogger
+namespace ForestTrace.Business
 {
     [AttributeUsage(AttributeTargets.Method)]
     public class TrackExecutionAttribute : Attribute
