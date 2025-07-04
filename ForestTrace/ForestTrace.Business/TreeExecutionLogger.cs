@@ -11,17 +11,33 @@ namespace ForestTrace.Business
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private static AsyncLocal<ExecutionContext?> _currentContext = new();
+        private Dictionary<string, object> _globalProperties = new();
+        public void AddGlobalProperty(string key, object value)
+        {
+            _globalProperties[key] = value;
+        }
 
         public void Start(string methodName, Dictionary<string, object>? props = null)
         {
             var traceId = _currentContext.Value?.TraceId ?? Guid.NewGuid().ToString();
             var parent = _currentContext.Value;
 
+
             var context = new ExecutionContext(methodName, traceId)
             {
                 Properties = props,
                 Parent = parent
             };
+
+            context.Properties = new Dictionary<string, object>(_globalProperties);
+
+            if (props != null)
+            {
+                foreach (var kv in props)
+                {
+                    context.Properties[kv.Key] = kv.Value;
+                }
+            }
 
             parent?.Children.Add(context);
             _currentContext.Value = context;
@@ -58,19 +74,27 @@ namespace ForestTrace.Business
 
         private void SaveJson(ExecutionContext root)
         {
-            var json = JsonSerializer.Serialize(root, new JsonSerializerOptions
-            {
-                WriteIndented = true
-            });
-
-            var safeDate = DateTime.Now.ToString("yyyyMMdd");
-            var logsDir = $"logs/{DateTime.Now.ToShortDateString()}";
+            var logsDir = $"logs/{DateTime.Now:yyyyMMdd}";
             Directory.CreateDirectory(logsDir);
 
-            var fileName = Path.Combine(logsDir, $"LogTree_{safeDate}.json");
-            File.WriteAllText(fileName, json);
-            _logger.Info($"JSON tree log saved: {fileName}");
+            var filePath = Path.Combine(logsDir, $"tree_all_{DateTime.Now:yyyyMMdd}.json");
+
+            List<ExecutionContext> allTrees = new();
+
+            if (File.Exists(filePath))
+            {
+                var existingJson = File.ReadAllText(filePath);
+                allTrees = JsonSerializer.Deserialize<List<ExecutionContext>>(existingJson) ?? new List<ExecutionContext>();
+            }
+
+            allTrees.Add(root);
+
+            var newJson = JsonSerializer.Serialize(allTrees, new JsonSerializerOptions { WriteIndented = true });
+            File.WriteAllText(filePath, newJson);
+
+            _logger.Info($"Appended tree log to {filePath}");
         }
+
 
         private void SaveMermaid(ExecutionContext root)
         {
@@ -78,7 +102,7 @@ namespace ForestTrace.Business
             var lines = new List<string> { "graph TD" };
             BuildMermaid(root, lines, null);
 
-            var logsDir = $"logs/{DateTime.Now.ToShortDateString()}";
+            var logsDir = $"logs/{DateTime.Now:yyyyMMdd}";
             Directory.CreateDirectory(logsDir);
 
             var fileName = Path.Combine(logsDir, $"LogTree_{safeDate}.mmd");
