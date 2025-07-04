@@ -62,8 +62,12 @@ namespace ForestTrace.Business
             {
                 WriteIndented = true
             });
-            var fileName = $"logs/tree_{root.TraceId}_{DateTime.Now.ToShortDateString()}.json";
-            Directory.CreateDirectory("logs");
+
+            var safeDate = DateTime.Now.ToString("yyyyMMdd_HHmmss");
+            var logsDir = "logs";
+            Directory.CreateDirectory(logsDir);
+
+            var fileName = Path.Combine(logsDir, $"tree_{root.TraceId}_{safeDate}.json");
             File.WriteAllText(fileName, json);
             _logger.Info($"JSON tree log saved: {fileName}");
         }
@@ -72,8 +76,11 @@ namespace ForestTrace.Business
         {
             var lines = new List<string> { "graph TD" };
             BuildMermaid(root, lines, null);
-            var fileName = $"logs/tree_{root.TraceId}.mmd";
-            Directory.CreateDirectory("logs");
+
+            var logsDir = "logs";
+            Directory.CreateDirectory(logsDir);
+
+            var fileName = Path.Combine(logsDir, $"tree_{root.TraceId}.mmd");
             File.WriteAllLines(fileName, lines);
             _logger.Info($"Mermaid graph saved: {fileName}");
         }
@@ -89,13 +96,18 @@ namespace ForestTrace.Business
             foreach (var log in node.Logs)
             {
                 var logId = Guid.NewGuid().ToString("N").Substring(0, 8);
-                lines.Add($"{nodeId} --> {logId}[\"Log: {log}\"]");
+                lines.Add($"{nodeId} --> {logId}[\"Log: {EscapeMermaid(log)}\"]");
             }
 
             foreach (var child in node.Children)
             {
                 BuildMermaid(child, lines, nodeId);
             }
+        }
+
+        private string EscapeMermaid(string text)
+        {
+            return text.Replace("\"", "\\\"");
         }
 
         public void LogInfo(string message)
@@ -127,6 +139,5 @@ namespace ForestTrace.Business
             }
             _logger.Debug(message);
         }
-
     }
 }
