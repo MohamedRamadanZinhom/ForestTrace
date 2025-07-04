@@ -49,13 +49,13 @@ namespace ForestTrace.Business
             if (context != null)
             {
                 context.Logs.Add(message);
-            }
-
-            if (props != null)
-            {
-                foreach (var kv in props)
+               
+                if (props != null)
                 {
-                    context.Properties[kv.Key] = kv.Value;
+                    foreach (var kv in props)
+                    {
+                        context.Properties[kv.Key] = kv.Value;
+                    }
                 }
             }
 
@@ -150,15 +150,17 @@ namespace ForestTrace.Business
             if (context != null)
             {
                 context.Logs.Add($"INFO: {message}");
+               
+                if (props != null)
+                {
+                    foreach (var kv in props)
+                    {
+                        context.Properties[kv.Key] = kv.Value;
+                    }
+                }
+
             }
 
-            if (props != null)
-            {
-                foreach (var kv in props)
-                {
-                    context.Properties[kv.Key] = kv.Value;
-                }
-            }
 
             _logger.Info(message);
         }
@@ -169,15 +171,17 @@ namespace ForestTrace.Business
             if (context != null)
             {
                 context.Logs.Add($"ERROR: {message}");
+
+                if (props != null)
+                {
+                    foreach (var kv in props)
+                    {
+                        context.Properties[kv.Key] = kv.Value;
+                    }
+                }
+
             }
 
-            if (props != null)
-            {
-                foreach (var kv in props)
-                {
-                    context.Properties[kv.Key] = kv.Value;
-                }
-            }
 
             _logger.Error(message);
         }
@@ -188,14 +192,15 @@ namespace ForestTrace.Business
             if (context != null)
             {
                 context.Logs.Add($"DEBUG: {message}");
-            }
 
-            if (props != null)
-            {
-                foreach (var kv in props)
+                if (props != null)
                 {
-                    context.Properties[kv.Key] = kv.Value;
+                    foreach (var kv in props)
+                    {
+                        context.Properties[kv.Key] = kv.Value;
+                    }
                 }
+
             }
 
             _logger.Debug(message);
