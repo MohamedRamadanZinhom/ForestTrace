@@ -63,24 +63,25 @@ namespace ForestTrace.Business
                 WriteIndented = true
             });
 
-            var safeDate = DateTime.Now.ToString("yyyyMMdd_HHmmss");
-            var logsDir = "logs";
+            var safeDate = DateTime.Now.ToString("yyyyMMdd");
+            var logsDir = $"logs/{DateTime.Now.ToShortDateString()}";
             Directory.CreateDirectory(logsDir);
 
-            var fileName = Path.Combine(logsDir, $"tree_{root.TraceId}_{safeDate}.json");
+            var fileName = Path.Combine(logsDir, $"LogTree_{safeDate}.json");
             File.WriteAllText(fileName, json);
             _logger.Info($"JSON tree log saved: {fileName}");
         }
 
         private void SaveMermaid(ExecutionContext root)
         {
+            var safeDate = DateTime.Now.ToString("yyyyMMdd");
             var lines = new List<string> { "graph TD" };
             BuildMermaid(root, lines, null);
 
-            var logsDir = "logs";
+            var logsDir = $"logs/{DateTime.Now.ToShortDateString()}";
             Directory.CreateDirectory(logsDir);
 
-            var fileName = Path.Combine(logsDir, $"tree_{root.TraceId}.mmd");
+            var fileName = Path.Combine(logsDir, $"LogTree_{safeDate}.mmd");
             File.WriteAllLines(fileName, lines);
             _logger.Info($"Mermaid graph saved: {fileName}");
         }
