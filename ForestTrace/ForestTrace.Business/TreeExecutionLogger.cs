@@ -50,6 +50,15 @@ namespace ForestTrace.Business
             {
                 context.Logs.Add(message);
             }
+
+            if (props != null)
+            {
+                foreach (var kv in props)
+                {
+                    context.Properties[kv.Key] = kv.Value;
+                }
+            }
+
             _logger.Info(message);
         }
 
@@ -77,7 +86,7 @@ namespace ForestTrace.Business
             var logsDir = $"logs/{DateTime.Now:yyyyMMdd}";
             Directory.CreateDirectory(logsDir);
 
-            var filePath = Path.Combine(logsDir, $"tree_all_{DateTime.Now:yyyyMMdd}.json");
+            var filePath = Path.Combine(logsDir, $"LogTree_{DateTime.Now:yyyyMMdd}.json");
 
             List<ExecutionContext> allTrees = new();
 
@@ -142,6 +151,15 @@ namespace ForestTrace.Business
             {
                 context.Logs.Add($"INFO: {message}");
             }
+
+            if (props != null)
+            {
+                foreach (var kv in props)
+                {
+                    context.Properties[kv.Key] = kv.Value;
+                }
+            }
+
             _logger.Info(message);
         }
 
@@ -152,6 +170,15 @@ namespace ForestTrace.Business
             {
                 context.Logs.Add($"ERROR: {message}");
             }
+
+            if (props != null)
+            {
+                foreach (var kv in props)
+                {
+                    context.Properties[kv.Key] = kv.Value;
+                }
+            }
+
             _logger.Error(message);
         }
 
@@ -162,6 +189,15 @@ namespace ForestTrace.Business
             {
                 context.Logs.Add($"DEBUG: {message}");
             }
+
+            if (props != null)
+            {
+                foreach (var kv in props)
+                {
+                    context.Properties[kv.Key] = kv.Value;
+                }
+            }
+
             _logger.Debug(message);
         }
     }
