@@ -1,5 +1,5 @@
 ﻿using Castle.DynamicProxy;
-using MyLogger;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
